@@ -1,0 +1,35 @@
+---
+- name: Configure secure-infra instance
+  hosts: all
+  become: yes
+  vars:
+    username: devops
+  tasks:
+
+    - name: Update system packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Create user "{{ username }}"
+      user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Add SSH key for "{{ username }}"
+      authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', '../your-public-key.pub') }}"
