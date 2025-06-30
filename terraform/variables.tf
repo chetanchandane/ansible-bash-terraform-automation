@@ -14,5 +14,5 @@ variable "ami_id" {
 
 variable "user_ip"{
     description = "the local IP address of the user"
-    
+    sensitive = true
 }
