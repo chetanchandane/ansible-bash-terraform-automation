@@ -40,3 +40,9 @@ terraform.rc
 #ansible.cffg
 
 ansible/inventory.ini
+*.pem
+*.log
+vm_ip.txt
+vault/*.json
+__pycache__/
+logs/
