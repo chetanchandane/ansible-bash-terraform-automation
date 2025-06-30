@@ -1,0 +1,45 @@
+Starting full infrastructure automation...
+Running Terraform apply...
+[0m[1mvar.user_ip[0m
+  the local IP address of the user
+
+  [1mEnter a value:[0m [0m
+[0m[1mdata.aws_vpc.default: Reading...[0m[0m
+[0m[1mdata.aws_vpc.default: Read complete after 1s [id=vpc-0f4c88be0b82827dc][0m
+[0m[1maws_security_group.secure_sg: Refreshing state... [id=sg-00a26f35554366e7d][0m
+[0m[1maws_instance.secure_vm: Refreshing state... [id=i-0efd36302bbbee08a][0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+[0m[1m[32m
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0minstance_ip = "13.221.230.241"
+public_dns = "ec2-13-221-230-241.compute-1.amazonaws.com"
+public_ip = "13.221.230.241"
+Instance IP: 13.221.230.241
+Waiting 60 seconds for EC2 to finish booting...
+Updating Ansible inventory with new IP...
+Running Ansible playbook...
+
+PLAY [Configure secure-infra instance] *****************************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Platform linux on host 13.221.230.241 is using the discovered Python
+interpreter at /usr/bin/python3.7, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [13.221.230.241]
+
+TASK [Update base system packages] *********************************************
+fatal: [13.221.230.241]: FAILED! => {"changed": false, "msg": "Unsupported parameters for (ansible.legacy.command) module: warn. Supported parameters include: _raw_params, _uses_shell, argv, chdir, creates, executable, expand_argument_vars, removes, stdin, stdin_add_newline, strip_empty_ends."}
+
+PLAY RECAP *********************************************************************
+13.221.230.241             : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+All tasks completed. Full log saved to ../logs/provision.log

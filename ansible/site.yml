@@ -4,17 +4,23 @@
   become: yes
   vars:
     username: devops
+    secret_key: db-creds
+    local_secret_file: ~/vault/{{ secret_key }}.json
+    remote_secret_path: /etc/app/secrets.env
+
   tasks:
 
-    - name: Update system packages
-      yum:
-        name: "*"
-        state: latest
+    - name: Update base system packages
+      shell: |
+        yum update -y
+      args:
+        warn: false
 
     - name: Install Apache
-      yum:
-        name: httpd
-        state: present
+      shell: |
+        yum install -y httpd
+      args:
+        warn: false
 
     - name: Start and enable Apache service
       service:
@@ -33,3 +39,37 @@
         user: "{{ username }}"
         state: present
         key: "{{ lookup('file', '../your-public-key.pub') }}"
+
+    - name: Fetch "{{ secret_key }}" from Vault
+      delegate_to: localhost
+      script: ../scripts/fetch_secret.sh {{ secret_key }}
+
+    - name: Copy secret JSON to remote host
+      copy:
+        src: "{{ local_secret_file }}"
+        dest: /tmp/{{ secret_key }}.json
+        mode: '0600'
+
+    - name: Parse and save secrets to /etc/app/secrets.env
+      block:
+        - name: Read secret file into variable
+          slurp:
+            src: /tmp/{{ secret_key }}.json
+          register: secret_raw
+
+        - name: Set fact from JSON
+          set_fact:
+            vault_secret: "{{ secret_raw['content'] | b64decode | from_json }}"
+
+        - name: Create secrets.env file
+          copy:
+            dest: "{{ remote_secret_path }}"
+            content: |
+              DB_USERNAME={{ vault_secret.secret.username }}
+              DB_PASSWORD={{ vault_secret.secret.password }}
+            mode: '0600'
+
+        - name: Cleanup temp secret file
+          file:
+            path: /tmp/{{ secret_key }}.json
+            state: absent
