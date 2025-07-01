@@ -5,8 +5,11 @@ This project demonstrates secure, automated provisioning of cloud infrastructure
 It fully automates the lifecycle of a virtual machine, configures essential software, securely retrieves secrets, and stores them on the provisioned EC2 instance — all via a single command.
 
 ---
+### 📸 Architecture
+![Architecture Diagram](architecture/architecture.png)
 
-## 🧰 Tech Stack
+---
+### 🧰 Tech Stack
 
 - **Terraform** – AWS EC2 + Security Group provisioning
 - **Ansible** – Apache setup, user creation, secret injection
@@ -17,7 +20,7 @@ It fully automates the lifecycle of a virtual machine, configures essential soft
 
 ---
 
-## 🚀 One-Command Deployment
+### 🚀 One-Command Deployment
 
 ```bash
 cd scripts
